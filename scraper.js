@@ -1,5 +1,4 @@
 const request = require('request');
-const cheerioAdv = require('cheerio-advanced-selectors');
 const cheerio = require('cheerio');
 const Parser = require("google-search-parser2");
 const parser = new Parser(request);
