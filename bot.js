@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token } = require('./config.json');
+const { BOT_PREFIX, BOT_TOKEN } = require('dotenv').config().parsed;
 
 exports.run = () => {
     const client = new Discord.Client();
@@ -20,9 +20,9 @@ exports.run = () => {
     });
     
     client.on('message', message => {
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        if (!message.content.startsWith(BOT_PREFIX) || message.author.bot) return;
     
-        const args = message.content.slice(prefix.length).split(/ +/);
+        const args = message.content.slice(BOT_PREFIX.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
     
         const command = client.commands.get(commandName)
@@ -42,7 +42,7 @@ exports.run = () => {
             let reply = `You didn't provide any arguments, ${message.author}!`;
     
             if (command.usage) {
-                reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+                reply += `\nThe proper usage would be: \`${BOT_PREFIX}${command.name} ${command.usage}\``;
             }
     
             return message.channel.send(reply);
@@ -81,5 +81,5 @@ exports.run = () => {
         }
     });
     
-    client.login(token);
+    client.login(BOT_TOKEN);
 }
