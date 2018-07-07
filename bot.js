@@ -1,6 +1,9 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { BOT_PREFIX, BOT_TOKEN } = require('dotenv').config().parsed;
+const env = require('dotenv').config().parsed;
+
+const BOT_PREFIX = process.env.BOT_PREFIX || env.BOT_PREFIX;
+const BOT_TOKEN = process.env.BOT_TOKEN || env.BOT_TOKEN;
 
 const client = new Discord.Client();
 

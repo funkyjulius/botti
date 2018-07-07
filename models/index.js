@@ -1,6 +1,8 @@
-const { DATABASE_URL } = require('dotenv').config().parsed;
+const env = require('dotenv').config().parsed;
 const Sequelize = require('sequelize');
 const requireModels = require('sequelize-require-models');
+
+const DATABASE_URL = process.env.DATABASE_URL || env.DATABASE_URL;
 
 const db = new Sequelize(DATABASE_URL, {
   dialect: 'postgres',
