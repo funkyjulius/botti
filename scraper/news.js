@@ -7,7 +7,7 @@ module.exports = (db, latestHeadline) => {
   const sourceUrl = 'http://www.ampparit.com/p%C3%A4%C3%A4uutiset';
   const newsArticles = [];
 
-  rp(sourceUrl)
+  return rp(sourceUrl)
     .then((html) => {
       const $ = cheerio.load(html);
       const content = $('.items-list-header').parent().children();
@@ -15,7 +15,6 @@ module.exports = (db, latestHeadline) => {
 
       articles.find('a').each((i, el) => {
         if ($(el).hasClass('news-item-headline')) {
-          if (i > 10) return;
           const headline = $(el).text();
           const url = $(el).attr('href');
 
@@ -24,7 +23,7 @@ module.exports = (db, latestHeadline) => {
         }
       });
 
-      if (newsArticles.length === 0) { console.log('No news to post.'); return; }
+      if (newsArticles.length === 0) { console.log('No news to post.'); return 'No news to post.'; }
       const first = newsArticles[0];
 
       newsArticles
@@ -48,6 +47,7 @@ module.exports = (db, latestHeadline) => {
               }
             });
         });
+      return 'News incoming!';
     })
     .catch((err) => {
       throw new Error(err);

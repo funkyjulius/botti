@@ -7,13 +7,15 @@ const parser = new Parser(request);
 
 module.exports = {
   news() {
-    return db.models.news.findAll({
-      limit: 1,
-      order: [['createdAt', 'DESC']],
-    }).then((entries) => {
-      const latestHeadline = (entries.length === 0 ? '' : entries.shift().get('headline'));
-      getNews(db, latestHeadline);
-    }).catch((err) => { throw new Error(err); });
+    return new Promise((resolve, reject) => {
+      db.models.news.findAll({
+        limit: 1,
+        order: [['createdAt', 'DESC']],
+      }).then((entries) => {
+        const latestHeadline = (entries.length === 0 ? '' : entries.shift().get('headline'));
+        resolve(getNews(db, latestHeadline));
+      }).catch((err) => { reject(err); });
+    });
   },
 
   pictureSearchGoogle(searchTerm) {

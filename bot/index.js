@@ -1,8 +1,8 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const env = require('dotenv').config().parsed;
+const { BOT_PREFIX } = require('./config.json');
 
-const BOT_PREFIX = process.env.BOT_PREFIX || env.BOT_PREFIX;
 const BOT_TOKEN = process.env.BOT_TOKEN || env.BOT_TOKEN;
 
 const client = new Discord.Client();
@@ -24,10 +24,10 @@ module.exports = {
   run() {
     client.commands = new Discord.Collection();
 
-    const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+    const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith('.js'));
 
     commandFiles.forEach((file) => {
-      const command = require(`./commands/${file}`);
+      const command = require(`${__dirname}/commands/${file}`);
       client.commands.set(command.name, command);
     });
 
@@ -35,6 +35,10 @@ module.exports = {
 
     client.on('ready', () => {
       console.log('Botti käynnissä!');
+
+      // client.channels
+      //   .filter(chan => chan.type.toLowerCase() === 'text')
+      //   .map(channel => channel.send('Heräsin').catch(console.error));
     });
 
     client.on('message', (message) => {
