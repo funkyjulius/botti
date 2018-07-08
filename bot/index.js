@@ -23,7 +23,13 @@ module.exports = {
 
   run() {
     client.login(BOT_TOKEN);
-    client.on('ready', () => { console.log('Botti käynnissä!'); });
+    client.on('ready', () => {
+      console.log('Botti käynnissä!');
+      client.guilds.forEach((guild) => {
+        console.log(guild.members);
+      });
+    });
+
 
     const cooldowns = new Discord.Collection();
     client.commands = new Discord.Collection();

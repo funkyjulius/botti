@@ -17,19 +17,19 @@ app.listen(PORT);
 
 console.log(`Botti hengittää kolossa ${PORT}`);
 
-const getNewsTimer = new CronJob({
-  cronTime: '*/60 * * * *', // Every 60min
-  onTick() {
-    scraper.news();
-  }
-});
+// const getNewsTimer = new CronJob({
+//   cronTime: '*/60 * * * *', // Every 60min
+//   onTick() {
+//     scraper.news();
+//   },
+// });
 
 db
   .authenticate()
-  .then(() => { 
-    console.log('Connection has been established successfully.');
+  .then(() => {
+    console.log('Connected to the database.');
     // If we don't have access to db, newsbot will crash.
     // So let's start it IF we have proper connecttion.
-    getNewsTimer.start();
+    // getNewsTimer.start();
   })
   .catch((err) => { console.error('Unable to connect to the database:', err); });
