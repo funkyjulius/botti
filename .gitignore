@@ -74,3 +74,4 @@ typings/
 
 # Misc
 .vscode
+bot/config.json
