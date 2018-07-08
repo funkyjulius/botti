@@ -22,23 +22,16 @@ module.exports = {
   },
 
   run() {
-    client.commands = new Discord.Collection();
+    client.login(BOT_TOKEN);
+    client.on('ready', () => { console.log('Botti käynnissä!'); });
 
+    const cooldowns = new Discord.Collection();
+    client.commands = new Discord.Collection();
     const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith('.js'));
 
     commandFiles.forEach((file) => {
       const command = require(`${__dirname}/commands/${file}`);
       client.commands.set(command.name, command);
-    });
-
-    const cooldowns = new Discord.Collection();
-
-    client.on('ready', () => {
-      console.log('Botti käynnissä!');
-
-      // client.channels
-      //   .filter(chan => chan.type.toLowerCase() === 'text')
-      //   .map(channel => channel.send('Heräsin').catch(console.error));
     });
 
     client.on('message', (message) => {
@@ -49,15 +42,17 @@ module.exports = {
 
       const command = client.commands.get(commandName)
               || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+      // ^^ Are aliases really necessary? ^^
 
       if (!command) {
         message.delete();
-        message.reply('Komentoa ei ole olemassa!');
+        message.reply('Command does not exist! Please use !help to find out commands.');
         return;
       }
 
       if (command.guildOnly && message.channel.type !== 'text') {
-        return message.reply('I can\'t execute that command inside DMs!');
+        message.reply('I can\'t execute that command inside DMs!');
+        return;
       }
 
       if (command.args && !args.length) {
@@ -67,7 +62,8 @@ module.exports = {
           reply += `\nThe proper usage would be: \`${BOT_PREFIX}${command.name} ${command.usage}\``;
         }
 
-        return message.channel.send(reply);
+        message.channel.send(reply);
+        return;
       }
 
       if (!cooldowns.has(command.name)) {
@@ -86,7 +82,8 @@ module.exports = {
 
         if (now < expirationTime) {
           const timeLeft = (expirationTime - now) / 1000;
-          return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+          message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+          return;
         }
 
         timestamps.set(message.author.id, now);
@@ -100,8 +97,6 @@ module.exports = {
         message.reply('there was an error trying to execute that command!');
       }
     });
-
-    client.login(BOT_TOKEN);
   },
 
 };

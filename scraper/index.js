@@ -13,6 +13,7 @@ module.exports = {
         order: [['createdAt', 'DESC']],
       }).then((entries) => {
         const latestHeadline = (entries.length === 0 ? '' : entries.shift().get('headline'));
+        console.log('Latest headline:', latestHeadline);
         resolve(getNews(db, latestHeadline));
       }).catch((err) => { reject(err); });
     });

@@ -18,24 +18,33 @@ module.exports = (db, latestHeadline) => {
           const headline = $(el).text();
           const url = $(el).attr('href');
 
-          if (headline === latestHeadline) { console.log('Found from db:', headline); return false; }
+          if (headline === latestHeadline) {
+            console.log('Found from db:', headline);
+            // Ends the loop
+            return false;
+          }
           newsArticles.push({ headline, url });
         }
       });
 
-      if (newsArticles.length === 0) { console.log('No news to post.'); return 'No news to post.'; }
+      // End the process if there is nothing new to show
+      if (newsArticles.length === 0) {
+        console.log('No news to post.');
+        return 'No news to post.';
+      }
       const first = newsArticles[0];
 
       newsArticles
-        .reverse()
+        .reverse() // Latest news will be shown as newest messages
         .forEach((article) => {
           pictureSearchGoogle(article.headline)
             .then((picture) => {
               postOnDiscordChannels(article.headline, article.url, picture, 'uutiset');
 
-              // Get the latest news
+              // Save the most newest article to db
+              // to avoid nonsense processing
               if (article.headline === first.headline) {
-                console.log('Tallentaa', article.headline);
+                console.log('To db:', article.headline);
                 db.models.news.sync()
                   .then(() => {
                     db.models.news.create({

@@ -21,13 +21,15 @@ const getNewsTimer = new CronJob({
   cronTime: '*/60 * * * *', // Every 60min
   onTick() {
     scraper.news();
-  },
-  start: true,
+  }
 });
-
-getNewsTimer.start();
 
 db
   .authenticate()
-  .then(() => { console.log('Connection has been established successfully.'); })
+  .then(() => { 
+    console.log('Connection has been established successfully.');
+    // If we don't have access to db, newsbot will crash.
+    // So let's start it IF we have proper connecttion.
+    getNewsTimer.start();
+  })
   .catch((err) => { console.error('Unable to connect to the database:', err); });
