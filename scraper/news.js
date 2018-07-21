@@ -14,17 +14,18 @@ module.exports = (db, latestHeadline) => {
       const articles = content.filter(el => content[el].name === 'article');
 
       articles.find('a').each((i, el) => {
-        if ($(el).hasClass('news-item-headline')) {
-          const headline = $(el).text();
-          const url = $(el).attr('href');
+        if (!$(el).hasClass('news-item-headline')) { return false; }
 
-          if (headline === latestHeadline) {
-            console.log('Found from db:', headline);
-            // Ends the loop
-            return false;
-          }
-          newsArticles.push({ headline, url });
+        const headline = $(el).text();
+        const url = $(el).attr('href');
+
+        if (headline === latestHeadline) {
+          console.log('Found from db:', headline);
+          // Ends the loop
+          return false;
         }
+
+        return newsArticles.push({ headline, url });
       });
 
       // End the process if there is nothing new to show
@@ -56,9 +57,8 @@ module.exports = (db, latestHeadline) => {
               }
             });
         });
+      console.log('News incoming!');
       return 'News incoming!';
     })
-    .catch((err) => {
-      throw new Error(err);
-    });
+    .catch(err => new Error(err));
 };
